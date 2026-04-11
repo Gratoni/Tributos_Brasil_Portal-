@@ -1,0 +1,433 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Tributos Brasil - Design System Institucional */
+    --background: 0 0% 100%;
+    --foreground: 220 20% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 15%;
+    
+    /* Azul Institucional Tributos Brasil */
+    --primary: 215 85% 28%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 215 70% 45%;
+    --primary-dark: 215 90% 18%;
+    
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 220 20% 15%;
+    --muted: 210 20% 96%;
+    --muted-foreground: 220 10% 45%;
+    --accent: 215 85% 28%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 88%;
+    --input: 220 13% 88%;
+    --ring: 215 85% 28%;
+    --radius: 0.5rem;
+    
+    /* Cores Editoriais */
+    --editorial-blue: 215 85% 28%;
+    --editorial-blue-light: 215 70% 45%;
+    --editorial-blue-dark: 215 90% 18%;
+    --editorial-accent: 199 89% 48%;
+    --editorial-gray: 220 10% 45%;
+    --editorial-gray-light: 220 10% 65%;
+    --editorial-gray-dark: 220 20% 25%;
+    --editorial-surface: 210 20% 98%;
+    --editorial-border: 220 13% 90%;
+    
+    /* Categorias */
+    --cat-tributos: 215 85% 28%;
+    --cat-reforma: 25 85% 45%;
+    --cat-jurisprudencia: 280 60% 45%;
+    --cat-empresarial: 160 70% 35%;
+    --cat-alertas: 0 72% 51%;
+    
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 220 20% 25%;
+    --sidebar-primary: 215 85% 28%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 20% 96%;
+    --sidebar-accent-foreground: 220 20% 15%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 215 85% 28%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+  
+  /* Tipografia Editorial */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  
+  /* Corpo Editorial */
+  .editorial-body {
+    font-family: 'Merriweather', Georgia, serif;
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: hsl(var(--editorial-gray-dark));
+  }
+  
+  .editorial-body p {
+    margin-bottom: 1.5rem;
+  }
+  
+  .editorial-body p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+@layer components {
+  /* Cards de Notícias */
+  .news-card {
+    @apply bg-white rounded-lg overflow-hidden transition-all duration-300;
+    border: 1px solid hsl(var(--editorial-border));
+  }
+  
+  .news-card:hover {
+    @apply shadow-lg;
+    transform: translateY(-2px);
+  }
+  
+  .news-card-featured {
+    @apply relative overflow-hidden rounded-xl;
+  }
+  
+  .news-card-featured::after {
+    content: '';
+    @apply absolute inset-0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+  }
+  
+  /* Tags de Categoria */
+  .category-tag {
+    @apply inline-flex items-center px-3 py-1 text-xs font-semibold uppercase tracking-wider rounded-full;
+  }
+  
+  .category-tag-tributos {
+    @apply bg-[hsl(var(--cat-tributos))] text-white;
+  }
+  
+  .category-tag-reforma {
+    @apply bg-[hsl(var(--cat-reforma))] text-white;
+  }
+  
+  .category-tag-jurisprudencia {
+    @apply bg-[hsl(var(--cat-jurisprudencia))] text-white;
+  }
+  
+  .category-tag-empresarial {
+    @apply bg-[hsl(var(--cat-empresarial))] text-white;
+  }
+  
+  .category-tag-alertas {
+    @apply bg-[hsl(var(--cat-alertas))] text-white;
+  }
+  
+  /* Ticker de Urgência */
+  .urgency-ticker {
+    @apply bg-[hsl(var(--cat-alertas))] text-white py-2 px-4;
+  }
+  
+  /* Header Institucional */
+  .header-top {
+    @apply bg-[hsl(var(--editorial-blue-dark))] text-white py-2;
+    font-size: 0.8125rem;
+  }
+  
+  .header-main {
+    @apply bg-white border-b border-[hsl(var(--editorial-border))];
+  }
+  
+  /* Navegação Principal */
+  .nav-main {
+    @apply bg-[hsl(var(--editorial-blue))] text-white;
+  }
+  
+  .nav-link {
+    @apply px-4 py-3 text-sm font-medium transition-colors duration-200;
+  }
+  
+  .nav-link:hover {
+    @apply bg-white/10;
+  }
+  
+  .nav-link-active {
+    @apply bg-white/20;
+  }
+  
+  /* Seções Editoriais */
+  .section-header {
+    @apply flex items-center justify-between mb-6 pb-3 border-b-2 border-[hsl(var(--editorial-blue))];
+  }
+  
+  .section-title {
+    @apply text-xl font-bold text-[hsl(var(--editorial-blue))];
+  }
+  
+  .section-link {
+    @apply text-sm font-medium text-[hsl(var(--editorial-blue))] hover:underline;
+  }
+  
+  /* Bloco de Destaque */
+  .highlight-box {
+    @apply bg-[hsl(var(--editorial-surface))] rounded-lg p-6 border border-[hsl(var(--editorial-border))];
+  }
+  
+  /* Box Técnico */
+  .technical-box {
+    @apply bg-blue-50 border-l-4 border-[hsl(var(--editorial-blue))] p-5 rounded-r-lg;
+  }
+  
+  /* Box de Alerta */
+  .alert-box {
+    @apply bg-red-50 border-l-4 border-[hsl(var(--cat-alertas))] p-5 rounded-r-lg;
+  }
+  
+  /* Box de Impacto */
+  .impact-box {
+    @apply bg-green-50 border-l-4 border-[hsl(var(--cat-empresarial))] p-5 rounded-r-lg;
+  }
+  
+  /* Citação Destacada */
+  .pull-quote {
+    @apply text-2xl font-light italic text-[hsl(var(--editorial-gray-dark))] pl-6 border-l-4 border-[hsl(var(--editorial-blue))] my-8;
+    font-family: 'Merriweather', Georgia, serif;
+  }
+  
+  /* Lista de Mais Lidas */
+  .most-read-item {
+    @apply flex items-start gap-4 py-4 border-b border-[hsl(var(--editorial-border))] last:border-0;
+  }
+  
+  .most-read-number {
+    @apply flex-shrink-0 w-8 h-8 flex items-center justify-center bg-[hsl(var(--editorial-blue))] text-white font-bold text-sm rounded;
+  }
+  
+  /* Newsletter Box */
+  .newsletter-box {
+    @apply bg-gradient-to-br from-[hsl(var(--editorial-blue))] to-[hsl(var(--editorial-blue-dark))] text-white rounded-xl p-8;
+  }
+  
+  /* Footer Institucional */
+  .footer-main {
+    @apply bg-[hsl(var(--editorial-gray-dark))] text-white;
+  }
+  
+  .footer-bottom {
+    @apply bg-[hsl(var(--editorial-blue-dark))] text-white/80 py-4;
+  }
+  
+  /* Breadcrumbs */
+  .breadcrumb {
+    @apply flex items-center gap-2 text-sm text-[hsl(var(--editorial-gray))];
+  }
+  
+  .breadcrumb a:hover {
+    @apply text-[hsl(var(--editorial-blue))];
+  }
+  
+  /* Paginação */
+  .pagination-btn {
+    @apply px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200;
+  }
+  
+  .pagination-btn-active {
+    @apply bg-[hsl(var(--editorial-blue))] text-white;
+  }
+  
+  .pagination-btn-inactive {
+    @apply bg-white text-[hsl(var(--editorial-gray-dark))] border border-[hsl(var(--editorial-border))] hover:bg-[hsl(var(--editorial-surface))];
+  }
+  
+  /* Botões Institucionais */
+  .btn-primary {
+    @apply px-6 py-3 bg-[hsl(var(--editorial-blue))] text-white font-semibold rounded-lg transition-all duration-200;
+  }
+  
+  .btn-primary:hover {
+    @apply bg-[hsl(var(--editorial-blue-dark))];
+    transform: translateY(-1px);
+  }
+  
+  .btn-secondary {
+    @apply px-6 py-3 bg-white text-[hsl(var(--editorial-blue))] font-semibold rounded-lg border-2 border-[hsl(var(--editorial-blue))] transition-all duration-200;
+  }
+  
+  .btn-secondary:hover {
+    @apply bg-[hsl(var(--editorial-blue))] text-white;
+  }
+  
+  /* Formulários */
+  .form-input {
+    @apply w-full px-4 py-3 border border-[hsl(var(--editorial-border))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--editorial-blue))] focus:border-transparent transition-all duration-200;
+  }
+  
+  /* Skeleton Loading */
+  .skeleton {
+    @apply animate-pulse bg-gray-200 rounded;
+  }
+  
+  /* Scrollbar Personalizada */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--editorial-surface));
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--editorial-gray-light));
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--editorial-gray));
+  }
+}
+
+@layer utilities {
+  /* Utilitários de Texto */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-4 {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  /* Gradientes */
+  .gradient-blue {
+    background: linear-gradient(135deg, hsl(var(--editorial-blue)) 0%, hsl(var(--editorial-blue-dark)) 100%);
+  }
+  
+  /* Sombras */
+  .shadow-card {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .shadow-card-hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.08);
+  }
+  
+  /* Transições */
+  .transition-editorial {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Focus States */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-[hsl(var(--editorial-blue))] focus:ring-offset-2;
+  }
+}
+
+/* Animações */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse-soft {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.4s ease-out forwards;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* Ticker Animation */
+@keyframes ticker {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.ticker-animation {
+  animation: ticker 30s linear infinite;
+}
+
+.ticker-animation:hover {
+  animation-play-state: paused;
+}
+
+
+

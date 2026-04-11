@@ -1,0 +1,27 @@
+# Dependências
+app/node_modules/
+
+# Variáveis de ambiente (sensíveis)
+app/.env
+app/.env.local
+app/.env.*.local
+
+# Build
+app/dist/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Claude Code (configuração local)
+.claude/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
