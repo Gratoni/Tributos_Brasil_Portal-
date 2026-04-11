@@ -9,6 +9,8 @@
  *   VITE_ADMIN_PASSWORD = tributos2025
  */
 
+/* eslint-disable react-refresh/only-export-components */
+
 import {
   createContext,
   useCallback,
@@ -20,14 +22,27 @@ import {
 } from 'react';
 
 const STORAGE_KEY = 'tb_admin_token';
+const SESSION_TTL_MS = 8 * 60 * 60 * 1000; // 8 horas
 
 /* Credenciais configuráveis via .env */
-const ADMIN_USER = import.meta.env.VITE_ADMIN_USER     ?? 'admin';
+const ADMIN_USER = import.meta.env.VITE_ADMIN_USER ?? 'admin';
 const ADMIN_PASS = import.meta.env.VITE_ADMIN_PASSWORD ?? 'tributos2025';
 
 /** Token simples: base64(user:timestamp) — suficiente para SPA demo */
 function generateToken(user: string): string {
   return btoa(`${user}:${Date.now()}`);
+}
+
+/** Retorna false se o token não puder ser decodificado ou já tiver expirado */
+function isTokenValid(token: string): boolean {
+  try {
+    const parts = atob(token).split(':');
+    const timestamp = Number(parts[1]);
+    if (!timestamp || isNaN(timestamp)) return false;
+    return Date.now() - timestamp < SESSION_TTL_MS;
+  } catch {
+    return false;
+  }
 }
 
 function validateCredentials(user: string, pass: string): boolean {
@@ -50,9 +65,15 @@ interface AuthState {
 const AuthContext = createContext<AuthState | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [token, setToken] = useState<string | null>(() =>
-    localStorage.getItem(STORAGE_KEY),
-  );
+  const [token, setToken] = useState<string | null>(() => {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    // Descarta token inválido ou expirado na inicialização
+    if (stored && !isTokenValid(stored)) {
+      localStorage.removeItem(STORAGE_KEY);
+      return null;
+    }
+    return stored;
+  });
 
   /* Decodifica usuário do token */
   const user = useMemo<string | null>(() => {
@@ -64,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [token]);
 
-  const isAuthenticated = Boolean(token && user);
+  const isAuthenticated = Boolean(token && user && isTokenValid(token));
 
   /* Sincroniza com localStorage */
   useEffect(() => {

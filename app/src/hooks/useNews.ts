@@ -18,11 +18,11 @@ interface Resource<T> {
 }
 
 function useResource<T>(initial: T, fetcher: () => Promise<T>): Resource<T> {
-  const [data, setData]       = useState<T>(initial);
+  const [data, setData] = useState<T>(initial);
   const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const fetch = useCallback(async () => {
+  const load = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -32,11 +32,11 @@ function useResource<T>(initial: T, fetcher: () => Promise<T>): Resource<T> {
     } finally {
       setLoading(false);
     }
-  }, [fetcher]);  // eslint-disable-line react-hooks/exhaustive-deps
+  }, [fetcher]);
 
-  useEffect(() => { fetch(); }, [fetch]);
+  useEffect(() => { load(); }, [load]);
 
-  return { data, loading, error, refetch: fetch };
+  return { data, loading, error, refetch: load };
 }
 
 /* ──────────────────────────────────────────────────────

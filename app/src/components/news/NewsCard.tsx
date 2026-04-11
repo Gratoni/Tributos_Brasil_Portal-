@@ -34,12 +34,14 @@ export function NewsCard({
       <article className={`news-card-featured group ${className}`}>
         <AppLink href={`/noticias/${article.slug}`} className="block">
           <div className="relative aspect-[16/9] lg:aspect-[21/9]">
-            <img
-              src={article.featuredImage}
-              alt={article.title}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              loading="lazy"
-            />
+            {article.featuredImage && (
+              <img
+                src={article.featuredImage}
+                alt={article.title}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
+              />
+            )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8">
               <span className={`category-tag ${categoryColorClass} mb-3`}>
@@ -75,14 +77,16 @@ export function NewsCard({
     return (
       <article className={`group ${className}`}>
         <AppLink href={`/noticias/${article.slug}`} className="flex gap-3">
-          <div className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden">
-            <img
-              src={article.featuredImage}
-              alt={article.title}
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-              loading="lazy"
-            />
-          </div>
+          {article.featuredImage && (
+            <div className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden">
+              <img
+                src={article.featuredImage}
+                alt={article.title}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                loading="lazy"
+              />
+            </div>
+          )}
           <div className="flex-1 min-w-0">
             <span className={`inline-block category-tag ${categoryColorClass} text-[10px] px-2 py-0.5 mb-1.5`}>
               {article.category.name}
@@ -103,14 +107,16 @@ export function NewsCard({
     return (
       <article className={`news-card group ${className}`}>
         <AppLink href={`/noticias/${article.slug}`} className="flex flex-col sm:flex-row">
-          <div className="sm:w-2/5 aspect-video sm:aspect-auto overflow-hidden">
-            <img
-              src={article.featuredImage}
-              alt={article.title}
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              loading="lazy"
-            />
-          </div>
+          {article.featuredImage && (
+            <div className="sm:w-2/5 aspect-video sm:aspect-auto overflow-hidden">
+              <img
+                src={article.featuredImage}
+                alt={article.title}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                loading="lazy"
+              />
+            </div>
+          )}
           <div className="flex-1 p-4">
             <span className={`category-tag ${categoryColorClass} mb-2`}>
               {article.category.name}
@@ -150,14 +156,16 @@ export function NewsCard({
   return (
     <article className={`news-card group ${className}`}>
       <AppLink href={`/noticias/${article.slug}`} className="block">
-        <div className="aspect-video overflow-hidden">
-          <img
-            src={article.featuredImage}
-            alt={article.title}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-            loading="lazy"
-          />
-        </div>
+        {article.featuredImage && (
+          <div className="aspect-video overflow-hidden">
+            <img
+              src={article.featuredImage}
+              alt={article.title}
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              loading="lazy"
+            />
+          </div>
+        )}
         <div className="p-4">
           <span className={`category-tag ${categoryColorClass} mb-2`}>
             {article.category.name}

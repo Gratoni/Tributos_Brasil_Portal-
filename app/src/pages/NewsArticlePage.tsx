@@ -11,6 +11,7 @@ import {
   Bookmark,
   Tag,
   ChevronRight,
+  User,
 } from 'lucide-react';
 import { AppLink } from '@/components/common/AppLink';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
@@ -147,12 +148,18 @@ export function NewsArticlePage({ slug: propSlug }: NewsArticlePageProps = {}) {
 
             <div className="flex flex-wrap items-center gap-4 pb-6 border-b border-[hsl(var(--editorial-border))]">
               <div className="flex items-center gap-3">
-                <img
-                  src={article.author.avatar}
-                  alt={article.author.name}
-                  className="w-12 h-12 rounded-full object-cover"
-                  loading="lazy"
-                />
+                {article.author.avatar ? (
+                  <img
+                    src={article.author.avatar}
+                    alt={article.author.name}
+                    className="w-12 h-12 rounded-full object-cover"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-[hsl(var(--editorial-surface))] flex items-center justify-center">
+                    <User className="w-6 h-6 text-[hsl(var(--editorial-gray))]" />
+                  </div>
+                )}
                 <div>
                   <AppLink
                     href={`/colunistas/${article.author.slug}`}
@@ -278,12 +285,18 @@ export function NewsArticlePage({ slug: propSlug }: NewsArticlePageProps = {}) {
 
               <div className="rounded-3xl border border-[hsl(var(--editorial-border))] bg-[hsl(var(--editorial-surface))] p-6 md:p-8">
                 <div className="flex items-start gap-4">
-                  <img
-                    src={article.author.avatar}
-                    alt={article.author.name}
-                    className="w-20 h-20 rounded-full object-cover"
-                    loading="lazy"
-                  />
+                  {article.author.avatar ? (
+                    <img
+                      src={article.author.avatar}
+                      alt={article.author.name}
+                      className="w-20 h-20 rounded-full object-cover"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="w-20 h-20 rounded-full bg-[hsl(var(--editorial-surface))] flex items-center justify-center flex-shrink-0">
+                      <User className="w-10 h-10 text-[hsl(var(--editorial-gray))]" />
+                    </div>
+                  )}
                   <div>
                     <AppLink
                       href={`/colunistas/${article.author.slug}`}
@@ -341,12 +354,14 @@ export function NewsArticlePage({ slug: propSlug }: NewsArticlePageProps = {}) {
                       className="group block"
                     >
                       <div className="flex gap-3">
-                        <img
-                          src={relatedArticle.featuredImage}
-                          alt={relatedArticle.title}
-                          className="w-20 h-20 rounded-lg object-cover"
-                          loading="lazy"
-                        />
+                        {relatedArticle.featuredImage && (
+                          <img
+                            src={relatedArticle.featuredImage}
+                            alt={relatedArticle.title}
+                            className="w-20 h-20 rounded-lg object-cover flex-shrink-0"
+                            loading="lazy"
+                          />
+                        )}
                         <div>
                           <p className="text-xs uppercase tracking-[0.12em] text-[hsl(var(--editorial-blue))] mb-1">
                             {relatedArticle.category.name}

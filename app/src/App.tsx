@@ -123,6 +123,25 @@ function MainLayout() {
           <Route path="/calculadora-reforma" element={<ReformaCalculatorPage />} />
           <Route path="/alertas-reforma" element={<ReformaAlertsPage />} />
           <Route path="/sumulas" element={<SumulasPage />} />
+          <Route path="*" element={
+            <div className="min-h-[60vh] flex items-center justify-center py-20">
+              <div className="text-center px-4">
+                <p className="text-7xl font-bold text-[hsl(var(--editorial-blue))] mb-4">404</p>
+                <h1 className="text-2xl font-bold text-[hsl(var(--editorial-gray-dark))] mb-2">
+                  Página não encontrada
+                </h1>
+                <p className="text-[hsl(var(--editorial-gray))] mb-6">
+                  O endereço que você acessou não existe ou foi removido.
+                </p>
+                <a
+                  href="/"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-[hsl(var(--editorial-blue))] text-white font-medium rounded-lg hover:bg-[hsl(var(--editorial-blue-dark))] transition-colors"
+                >
+                  Voltar para Home
+                </a>
+              </div>
+            </div>
+          } />
         </Routes>
       </main>
       {showGlobalShell && <Footer />}
