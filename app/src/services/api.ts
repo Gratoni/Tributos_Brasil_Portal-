@@ -9,13 +9,21 @@ export class ApiError extends Error {
 
   constructor(status: number, message: string) {
     super(message);
-    this.name   = 'ApiError';
+    this.name = 'ApiError';
     this.status = status;
   }
 }
 
 const BASE_URL = import.meta.env.VITE_NEWS_API_URL ?? '';
-const API_KEY  = import.meta.env.VITE_NEWS_API_KEY  ?? '';
+const API_KEY = import.meta.env.VITE_NEWS_API_KEY ?? '';
+
+function resolveUrl(path: string): string {
+  try {
+    return new URL(path, BASE_URL).toString();
+  } catch {
+    return `${BASE_URL.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`;
+  }
+}
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   if (!BASE_URL) {
@@ -28,7 +36,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     ...(options?.headers ?? {}),
   };
 
-  const response = await fetch(`${BASE_URL}${path}`, { ...options, headers });
+  const response = await fetch(resolveUrl(path), { ...options, headers });
 
   if (!response.ok) {
     throw new ApiError(response.status, `HTTP ${response.status}: ${response.statusText}`);
@@ -38,8 +46,8 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  get:    <T>(path: string)                       => request<T>(path),
-  post:   <T>(path: string, body: unknown)        => request<T>(path, { method: 'POST',  body: JSON.stringify(body) }),
-  put:    <T>(path: string, body: unknown)        => request<T>(path, { method: 'PUT',   body: JSON.stringify(body) }),
-  delete: <T>(path: string)                       => request<T>(path, { method: 'DELETE' }),
+  get: <T>(path: string) => request<T>(path),
+  post: <T>(path: string, body: unknown) => request<T>(path, { method: 'POST', body: JSON.stringify(body) }),
+  put: <T>(path: string, body: unknown) => request<T>(path, { method: 'PUT', body: JSON.stringify(body) }),
+  delete: <T>(path: string) => request<T>(path, { method: 'DELETE' }),
 };

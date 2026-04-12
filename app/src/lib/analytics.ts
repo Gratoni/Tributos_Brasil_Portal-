@@ -16,7 +16,7 @@ declare global {
   }
 }
 
-const GA_ID  = import.meta.env.VITE_GA_MEASUREMENT_ID ?? '';
+const GA_ID = import.meta.env.VITE_GA_MEASUREMENT_ID ?? '';
 const IS_PROD = import.meta.env.VITE_APP_ENV === 'production' || import.meta.env.PROD;
 
 let initialized = false;
@@ -29,10 +29,8 @@ export function initAnalytics(): void {
   window.dataLayer = window.dataLayer ?? [];
 
   // Função gtag nativa (push arguments é intencional para o GA)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  window.gtag = function (..._args: any[]) {
-    // eslint-disable-next-line prefer-rest-params
-    window.dataLayer.push(arguments);
+  window.gtag = function (...args: unknown[]) {
+    window.dataLayer.push(args)
   };
 
   window.gtag('js', new Date());
@@ -53,7 +51,7 @@ export function initAnalytics(): void {
 export function trackPageView(path: string, title?: string): void {
   if (!GA_ID || !window.gtag) return;
   window.gtag('config', GA_ID, {
-    page_path:  path,
+    page_path: path,
     page_title: title ?? document.title,
   });
 }
@@ -74,7 +72,7 @@ export function trackEvent(
   if (!GA_ID || !window.gtag) return;
   window.gtag('event', action, {
     event_category: category,
-    event_label:    label,
+    event_label: label,
     value,
   });
 }
