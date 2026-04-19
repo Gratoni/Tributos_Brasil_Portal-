@@ -7,6 +7,9 @@ import { PageShell } from '@/components/layout/PageShell';
 import { NewsCard } from '@/components/news/NewsCard';
 import { MostReadList } from '@/components/news/MostReadList';
 import { NewsletterBox } from '@/components/news/NewsletterBox';
+import { Seo } from '@/components/common/Seo';
+import { JsonLd } from '@/components/common/JsonLd';
+import { breadcrumbJsonLd, collectionPageJsonLd } from '@/lib/jsonld';
 import { categories, getNewsByCategory, getMostReadNews } from '@/data/mockData';
 import { Button } from '@/components/ui/button';
 import {
@@ -44,8 +47,33 @@ export function CategoryPage({ slug: propSlug }: CategoryPageProps = {}) {
   const featuredArticle = sortedArticles[0];
   const otherArticles = sortedArticles.slice(1);
 
+  const categoryUrl = `/categoria/${category.slug}`;
+
   return (
-    <PageShell activeItem={`/categoria/${category.slug}`}>
+    <PageShell activeItem={categoryUrl}>
+      <Seo
+        title={`${category.name} — Notícias e Análises`}
+        description={
+          category.description ??
+          `Tudo sobre ${category.name} no portal Tributos Brasil: notícias, análises e jurisprudência.`
+        }
+        canonical={categoryUrl}
+      />
+      <JsonLd
+        id={`category-${category.slug}`}
+        data={collectionPageJsonLd({
+          name: category.name,
+          description: category.description,
+          url: categoryUrl,
+        })}
+      />
+      <JsonLd
+        id={`breadcrumb-cat-${category.slug}`}
+        data={breadcrumbJsonLd([
+          { name: 'Home', url: '/' },
+          { name: category.name, url: categoryUrl },
+        ])}
+      />
       <Breadcrumbs
         items={[
           { href: '/', label: 'Home' },

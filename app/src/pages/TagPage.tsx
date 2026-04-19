@@ -5,6 +5,9 @@ import { PageShell } from '@/components/layout/PageShell';
 import { NewsletterBox } from '@/components/news/NewsletterBox';
 import { MostReadList } from '@/components/news/MostReadList';
 import { NewsCard } from '@/components/news/NewsCard';
+import { Seo } from '@/components/common/Seo';
+import { JsonLd } from '@/components/common/JsonLd';
+import { breadcrumbJsonLd, collectionPageJsonLd } from '@/lib/jsonld';
 import { getMostReadNews, getNewsByTag, getTagBySlug } from '@/data/mockData';
 
 export function TagPage() {
@@ -16,6 +19,11 @@ export function TagPage() {
   if (!tag) {
     return (
       <PageShell>
+        <Seo
+          title="Tag não encontrada"
+          description="Essa classificação ainda não possui página pública."
+          noindex
+        />
         <section className="py-20">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-3xl font-bold text-[hsl(var(--editorial-gray-dark))]">
@@ -38,6 +46,27 @@ export function TagPage() {
 
   return (
     <PageShell>
+      <Seo
+        title={`Tag: ${tag.name}`}
+        description={`Publicações com a tag ${tag.name} no portal Tributos Brasil.`}
+        canonical={`/tag/${tag.slug}`}
+      />
+      <JsonLd
+        id={`tag-collection-${tag.slug}`}
+        data={collectionPageJsonLd({
+          name: `Tag: ${tag.name}`,
+          description: `Publicações relacionadas à tag ${tag.name}.`,
+          url: `/tag/${tag.slug}`,
+        })}
+      />
+      <JsonLd
+        id={`tag-breadcrumb-${tag.slug}`}
+        data={breadcrumbJsonLd([
+          { name: 'Home', url: '/' },
+          { name: 'Notícias', url: '/noticias' },
+          { name: `Tag: ${tag.name}`, url: `/tag/${tag.slug}` },
+        ])}
+      />
       <Breadcrumbs
         items={[
           { href: '/', label: 'Home' },

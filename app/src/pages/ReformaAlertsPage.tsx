@@ -3,6 +3,9 @@ import { AppLink } from '@/components/common/AppLink';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { PageShell } from '@/components/layout/PageShell';
 import { NewsletterBox } from '@/components/news/NewsletterBox';
+import { Seo } from '@/components/common/Seo';
+import { JsonLd } from '@/components/common/JsonLd';
+import { breadcrumbJsonLd } from '@/lib/jsonld';
 import { getNewsByCategory } from '@/data/mockData';
 
 const checkpoints = [
@@ -37,6 +40,19 @@ export function ReformaAlertsPage() {
 
   return (
     <PageShell activeItem="/categoria/reforma-tributaria">
+      <Seo
+        title="Alertas de Preparação para a Reforma Tributária"
+        description="Checklist de frentes críticas para empresas se prepararem para a transição da Reforma Tributária: contratos, ERP, treinamento e comunicação."
+        canonical="/alertas-reforma"
+      />
+      <JsonLd
+        id="reforma-alerts-breadcrumb"
+        data={breadcrumbJsonLd([
+          { name: 'Home', url: '/' },
+          { name: 'Reforma Tributária', url: '/categoria/reforma-tributaria' },
+          { name: 'Alertas de Preparo', url: '/alertas-reforma' },
+        ])}
+      />
       <Breadcrumbs
         items={[
           { href: '/', label: 'Home' },

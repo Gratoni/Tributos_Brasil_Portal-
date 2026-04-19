@@ -5,6 +5,9 @@ import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { PageShell } from '@/components/layout/PageShell';
 import { NewsletterBox } from '@/components/news/NewsletterBox';
 import { NewsCard } from '@/components/news/NewsCard';
+import { Seo } from '@/components/common/Seo';
+import { JsonLd } from '@/components/common/JsonLd';
+import { breadcrumbJsonLd, personJsonLd } from '@/lib/jsonld';
 import { getAuthorBySlug, getColumnistBySlug, getNewsByAuthor } from '@/data/mockData';
 import { buildLinkedInProfileUrl, buildTwitterProfileUrl } from '@/lib/social';
 
@@ -17,6 +20,11 @@ export function ColumnistProfilePage() {
   if (!author) {
     return (
       <PageShell activeItem="/colunistas">
+        <Seo
+          title="Colunista não encontrado"
+          description="O perfil solicitado não está disponível."
+          noindex
+        />
         <section className="py-20">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-3xl font-bold text-[hsl(var(--editorial-gray-dark))]">
@@ -39,6 +47,30 @@ export function ColumnistProfilePage() {
 
   return (
     <PageShell activeItem="/colunistas">
+      <Seo
+        title={`${author.name} — ${author.role}`}
+        description={author.bio ?? `Artigos e análises de ${author.name} no portal Tributos Brasil.`}
+        canonical={`/colunistas/${author.slug}`}
+        image={author.avatar}
+      />
+      <JsonLd
+        id={`person-${author.slug}`}
+        data={personJsonLd({
+          name: author.name,
+          slug: author.slug,
+          bio: author.bio,
+          avatar: author.avatar,
+          jobTitle: author.role,
+        })}
+      />
+      <JsonLd
+        id={`breadcrumb-columnist-${author.slug}`}
+        data={breadcrumbJsonLd([
+          { name: 'Home', url: '/' },
+          { name: 'Colunistas', url: '/colunistas' },
+          { name: author.name, url: `/colunistas/${author.slug}` },
+        ])}
+      />
       <Breadcrumbs
         items={[
           { href: '/', label: 'Home' },

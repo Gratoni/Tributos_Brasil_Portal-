@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Lock, LogIn, Eye, EyeOff } from 'lucide-react';
+import { Lock, LogIn, Eye, EyeOff, ShieldAlert } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { Seo } from '@/components/common/Seo';
 import { siteConfig } from '@/config/site';
 
 export function AdminLoginPage() {
-  const { login } = useAuth();
+  const { login, isConfigured } = useAuth();
   const navigate   = useNavigate();
 
   const [username, setUsername] = useState('');
@@ -19,6 +20,13 @@ export function AdminLoginPage() {
 
     if (!username.trim() || !password.trim()) {
       setError('Preencha usuário e senha.');
+      return;
+    }
+
+    if (!isConfigured) {
+      setError(
+        'Credenciais admin não configuradas neste ambiente. Defina VITE_ADMIN_USER e VITE_ADMIN_PASSWORD_HASH.',
+      );
       return;
     }
 
@@ -37,6 +45,7 @@ export function AdminLoginPage() {
 
   return (
     <div className="min-h-screen bg-[hsl(var(--editorial-surface))] flex items-center justify-center px-4">
+      <Seo title="Admin — Login" noindex />
       <div className="w-full max-w-md">
 
         {/* Header */}
@@ -67,6 +76,20 @@ export function AdminLoginPage() {
               <p className="text-xs text-[hsl(var(--editorial-gray))]">Somente usuários autorizados</p>
             </div>
           </div>
+
+          {!isConfigured && (
+            <div className="mb-5 flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+              <ShieldAlert className="mt-0.5 h-4 w-4 flex-shrink-0" />
+              <div>
+                <p className="font-semibold">Painel ainda não configurado</p>
+                <p className="mt-1 text-xs">
+                  Defina <code className="rounded bg-amber-100 px-1">VITE_ADMIN_USER</code> e{' '}
+                  <code className="rounded bg-amber-100 px-1">VITE_ADMIN_PASSWORD_HASH</code> no
+                  ambiente (<code>.env.production</code>) para habilitar o login.
+                </p>
+              </div>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             <div>

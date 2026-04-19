@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Mail, Check, AlertCircle } from 'lucide-react';
+import { Mail, Check, AlertCircle, Loader2 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { AppLink } from '@/components/common/AppLink';
 import { siteConfig } from '@/config/site';
+import { subscribeNewsletter } from '@/services/forms.service';
 
 export function NewsletterBox() {
   const [email, setEmail] = useState('');
@@ -12,20 +13,37 @@ export function NewsletterBox() {
     weeklySummary: false,
     legislationAlerts: true,
   });
-  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState<string>('');
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email || !acceptedTerms) {
       setStatus('error');
+      setErrorMessage('Preencha o e-mail e aceite os termos da LGPD.');
       return;
     }
 
-    setStatus('success');
-    setEmail('');
-    setName('');
+    setStatus('loading');
+    setErrorMessage('');
+
+    const result = await subscribeNewsletter({
+      email: email.trim(),
+      name: name.trim() || undefined,
+      preferences,
+      source: typeof window !== 'undefined' ? window.location.pathname : 'portal',
+    });
+
+    if (result.ok) {
+      setStatus('success');
+      setEmail('');
+      setName('');
+    } else {
+      setStatus('error');
+      setErrorMessage(result.error);
+    }
   };
 
   return (
@@ -126,15 +144,23 @@ export function NewsletterBox() {
             {status === 'error' && (
               <div className="flex items-center gap-2 text-red-300 text-sm">
                 <AlertCircle className="w-4 h-4" />
-                <span>Por favor, preencha o e-mail e aceite os termos.</span>
+                <span>{errorMessage || 'Por favor, preencha o e-mail e aceite os termos.'}</span>
               </div>
             )}
 
             <button
               type="submit"
-              className="w-full sm:w-auto px-8 py-3 bg-white text-[hsl(var(--editorial-blue))] font-bold rounded-lg hover:bg-white/90 transition-colors"
+              disabled={status === 'loading'}
+              className="w-full sm:w-auto px-8 py-3 bg-white text-[hsl(var(--editorial-blue))] font-bold rounded-lg hover:bg-white/90 transition-colors disabled:opacity-70 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
             >
-              Assinar Newsletter
+              {status === 'loading' ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Enviando...
+                </>
+              ) : (
+                'Assinar Newsletter'
+              )}
             </button>
           </form>
         )}

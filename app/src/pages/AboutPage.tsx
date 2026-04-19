@@ -15,6 +15,9 @@ import { HeaderMain } from '@/components/layout/HeaderMain';
 import { Navigation } from '@/components/layout/Navigation';
 import { Footer } from '@/components/layout/Footer';
 import { NewsletterBox } from '@/components/news/NewsletterBox';
+import { Seo } from '@/components/common/Seo';
+import { JsonLd } from '@/components/common/JsonLd';
+import { breadcrumbJsonLd, organizationJsonLd } from '@/lib/jsonld';
 import { columnists } from '@/data/mockData';
 import { siteConfig } from '@/config/site';
 
@@ -72,6 +75,19 @@ export function AboutPage() {
 
   return (
     <div className="min-h-screen bg-white">
+      <Seo
+        title="Sobre o Tributos Brasil"
+        description="Portal brasileiro especializado em notícias tributárias, contábeis e jurídicas. Conheça nossa equipe, missão e valores."
+        canonical="/sobre"
+      />
+      <JsonLd id="about-org" data={organizationJsonLd()} />
+      <JsonLd
+        id="about-breadcrumb"
+        data={breadcrumbJsonLd([
+          { name: 'Home', url: '/' },
+          { name: 'Sobre', url: '/sobre' },
+        ])}
+      />
       <HeaderTop />
       <HeaderMain />
       <Navigation activeItem="/sobre" />

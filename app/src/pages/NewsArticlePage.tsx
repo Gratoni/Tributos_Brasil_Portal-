@@ -17,6 +17,9 @@ import { AppLink } from '@/components/common/AppLink';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { PageShell } from '@/components/layout/PageShell';
 import { NewsletterBox } from '@/components/news/NewsletterBox';
+import { Seo } from '@/components/common/Seo';
+import { JsonLd } from '@/components/common/JsonLd';
+import { breadcrumbJsonLd, newsArticleJsonLd } from '@/lib/jsonld';
 import { getNewsBySlug, getRelatedNews } from '@/data/mockData';
 import {
   buildFacebookShareUrl,
@@ -72,6 +75,11 @@ export function NewsArticlePage({ slug: propSlug }: NewsArticlePageProps = {}) {
   if (!article) {
     return (
       <PageShell>
+        <Seo
+          title="Notícia não encontrada"
+          description="O conteúdo solicitado não está mais disponível."
+          noindex
+        />
         <section className="py-20">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-2xl font-bold text-[hsl(var(--editorial-gray-dark))] mb-2">
@@ -122,6 +130,27 @@ export function NewsArticlePage({ slug: propSlug }: NewsArticlePageProps = {}) {
 
   return (
     <PageShell activeItem={`/categoria/${article.category.slug}`}>
+      <Seo
+        title={article.metaTitle ?? article.title}
+        description={article.metaDescription ?? article.excerpt ?? article.subtitle}
+        canonical={`/noticias/${article.slug}`}
+        image={article.featuredImage}
+        type="article"
+        publishedAt={article.publishedAt}
+        updatedAt={article.updatedAt}
+        authorName={article.author.name}
+        section={article.category.name}
+        tags={article.tags.map((t) => t.name)}
+      />
+      <JsonLd id={`article-${article.slug}`} data={newsArticleJsonLd(article)} />
+      <JsonLd
+        id={`breadcrumb-${article.slug}`}
+        data={breadcrumbJsonLd([
+          { name: 'Home', url: '/' },
+          { name: article.category.name, url: `/categoria/${article.category.slug}` },
+          { name: article.title, url: `/noticias/${article.slug}` },
+        ])}
+      />
       <Breadcrumbs
         items={[
           { href: '/', label: 'Home' },

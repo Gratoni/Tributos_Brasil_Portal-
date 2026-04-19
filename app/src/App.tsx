@@ -41,6 +41,10 @@ import {
 import { Toaster } from '@/components/ui/sonner';
 import { siteConfig } from '@/config/site';
 import { usePageTracking } from '@/hooks/usePageTracking';
+import { Seo } from '@/components/common/Seo';
+import { JsonLd } from '@/components/common/JsonLd';
+import { organizationJsonLd, websiteJsonLd } from '@/lib/jsonld';
+import { WhatsAppFloat } from '@/components/common/WhatsAppFloat';
 
 // Página Home
 function HomePage() {
@@ -53,6 +57,13 @@ function HomePage() {
 
   return (
     <>
+      <Seo
+        title="Portal de Notícias Tributárias e Jurídicas"
+        description="Acompanhe a Reforma Tributária (IBS, CBS), jurisprudência do STF e STJ, ICMS, ISS, Simples Nacional e análises de especialistas para profissionais e empresas."
+        canonical="/"
+      />
+      <JsonLd id="org-jsonld" data={organizationJsonLd()} />
+      <JsonLd id="website-jsonld" data={websiteJsonLd()} />
       <BreakingNewsTicker />
       <HeroSection featuredNews={featuredNews} />
       <LatestNewsSection latestNews={latestNews} mostReadNews={mostReadNews} />
@@ -145,6 +156,7 @@ function MainLayout() {
         </Routes>
       </main>
       {showGlobalShell && <Footer />}
+      <WhatsAppFloat />
       <Toaster />
     </div>
   );

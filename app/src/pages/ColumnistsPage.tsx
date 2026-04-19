@@ -3,6 +3,9 @@ import { AppLink } from '@/components/common/AppLink';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { PageShell } from '@/components/layout/PageShell';
 import { NewsletterBox } from '@/components/news/NewsletterBox';
+import { Seo } from '@/components/common/Seo';
+import { JsonLd } from '@/components/common/JsonLd';
+import { breadcrumbJsonLd, collectionPageJsonLd } from '@/lib/jsonld';
 import { authors, getNewsByAuthor } from '@/data/mockData';
 
 export function ColumnistsPage() {
@@ -20,6 +23,26 @@ export function ColumnistsPage() {
 
   return (
     <PageShell activeItem="/colunistas">
+      <Seo
+        title="Colunistas e Especialistas Tributários"
+        description="Conheça os advogados, contadores e especialistas tributários que produzem o conteúdo do portal Tributos Brasil."
+        canonical="/colunistas"
+      />
+      <JsonLd
+        id="columnists-collection"
+        data={collectionPageJsonLd({
+          name: 'Colunistas e Especialistas',
+          description: 'Diretório de especialistas tributários do portal Tributos Brasil.',
+          url: '/colunistas',
+        })}
+      />
+      <JsonLd
+        id="columnists-breadcrumb"
+        data={breadcrumbJsonLd([
+          { name: 'Home', url: '/' },
+          { name: 'Colunistas', url: '/colunistas' },
+        ])}
+      />
       <Breadcrumbs
         items={[
           { href: '/', label: 'Home' },

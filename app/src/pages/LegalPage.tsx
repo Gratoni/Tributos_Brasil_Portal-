@@ -2,6 +2,9 @@ import { AppLink } from '@/components/common/AppLink';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { PageShell } from '@/components/layout/PageShell';
 import { NewsletterBox } from '@/components/news/NewsletterBox';
+import { Seo } from '@/components/common/Seo';
+import { JsonLd } from '@/components/common/JsonLd';
+import { breadcrumbJsonLd } from '@/lib/jsonld';
 
 interface LegalPageProps {
   variant: 'privacy' | 'terms' | 'lgpd';
@@ -91,11 +94,39 @@ const legalContent = {
   },
 } as const;
 
+const variantPaths: Record<LegalPageProps['variant'], string> = {
+  privacy: '/politica-de-privacidade',
+  terms: '/termos-de-uso',
+  lgpd: '/lgpd',
+};
+
+const variantDescriptions: Record<LegalPageProps['variant'], string> = {
+  privacy:
+    'Política de privacidade do portal Tributos Brasil: como coletamos, usamos e protegemos dados pessoais.',
+  terms:
+    'Termos de uso do portal Tributos Brasil: direitos, deveres e responsabilidades no uso do conteúdo editorial.',
+  lgpd:
+    'Compromisso com a LGPD: direitos do titular, bases legais e canal para exercer direitos sobre dados pessoais.',
+};
+
 export function LegalPage({ variant }: LegalPageProps) {
   const content = legalContent[variant];
+  const path = variantPaths[variant];
 
   return (
     <PageShell>
+      <Seo
+        title={content.title}
+        description={variantDescriptions[variant]}
+        canonical={path}
+      />
+      <JsonLd
+        id={`legal-breadcrumb-${variant}`}
+        data={breadcrumbJsonLd([
+          { name: 'Home', url: '/' },
+          { name: content.title, url: path },
+        ])}
+      />
       <Breadcrumbs
         items={[
           { href: '/', label: 'Home' },

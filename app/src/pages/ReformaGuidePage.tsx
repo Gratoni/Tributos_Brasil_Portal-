@@ -3,6 +3,9 @@ import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { PageShell } from '@/components/layout/PageShell';
 import { NewsletterBox } from '@/components/news/NewsletterBox';
 import { NewsCard } from '@/components/news/NewsCard';
+import { Seo } from '@/components/common/Seo';
+import { JsonLd } from '@/components/common/JsonLd';
+import { breadcrumbJsonLd } from '@/lib/jsonld';
 import { getNewsByCategory } from '@/data/mockData';
 
 const guideSections = [
@@ -37,6 +40,19 @@ export function ReformaGuidePage() {
 
   return (
     <PageShell activeItem="/categoria/reforma-tributaria">
+      <Seo
+        title="Guia Prático da Reforma Tributária (IBS e CBS)"
+        description="Roteiro completo para empresas se prepararem para a Reforma Tributária: impactos, governança da transição e plano de ação com IBS e CBS."
+        canonical="/guia-reforma-tributaria"
+      />
+      <JsonLd
+        id="reforma-guide-breadcrumb"
+        data={breadcrumbJsonLd([
+          { name: 'Home', url: '/' },
+          { name: 'Reforma Tributária', url: '/categoria/reforma-tributaria' },
+          { name: 'Guia Completo', url: '/guia-reforma-tributaria' },
+        ])}
+      />
       <Breadcrumbs
         items={[
           { href: '/', label: 'Home' },

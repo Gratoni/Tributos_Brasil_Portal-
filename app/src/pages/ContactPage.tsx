@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Mail, MapPin, Phone, Send, MessageCircle } from 'lucide-react';
+import { Mail, MapPin, Phone, Send, MessageCircle, Loader2 } from 'lucide-react';
 import { AppLink } from '@/components/common/AppLink';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { PageShell } from '@/components/layout/PageShell';
 import { NewsletterBox } from '@/components/news/NewsletterBox';
+import { Seo } from '@/components/common/Seo';
+import { JsonLd } from '@/components/common/JsonLd';
+import { breadcrumbJsonLd } from '@/lib/jsonld';
+import { sendContactMessage } from '@/services/forms.service';
 import { siteConfig } from '@/config/site';
 
 export function ContactPage() {
@@ -15,37 +19,70 @@ export function ContactPage() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
-  const [status, setStatus] = useState<'idle' | 'error' | 'success'>('idle');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'error' | 'success'>('idle');
+  const [statusMessage, setStatusMessage] = useState<string>('');
 
   useEffect(() => {
     setSubject(initialSubject);
   }, [initialSubject]);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!name.trim() || !email.trim() || !message.trim()) {
       setStatus('error');
+      setStatusMessage('Preencha nome, e-mail e mensagem para enviarmos o contato.');
       return;
     }
 
     const finalSubject = subject.trim() || 'Contato pelo portal Tributos Brasil';
-    const bodyLines = [
-      `Nome: ${name}`,
-      `E-mail: ${email}`,
-      `Telefone: ${phone || 'Nao informado'}`,
-      '',
-      message,
-    ];
 
-    const mailtoUrl = `mailto:${siteConfig.supportEmail}?subject=${encodeURIComponent(finalSubject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
+    setStatus('loading');
+    setStatusMessage('');
 
-    setStatus('success');
-    window.location.href = mailtoUrl;
+    const result = await sendContactMessage({
+      name: name.trim(),
+      email: email.trim(),
+      phone: phone.trim() || undefined,
+      subject: finalSubject,
+      message: message.trim(),
+    });
+
+    if (result.ok) {
+      setStatus('success');
+      setStatusMessage(
+        result.mode === 'api'
+          ? 'Mensagem enviada! Nossa equipe responderá em até 1 dia útil.'
+          : 'Seu cliente de e-mail foi acionado com os dados preenchidos.',
+      );
+      if (result.mode === 'mailto' && result.mailtoUrl) {
+        window.location.href = result.mailtoUrl;
+      } else {
+        setName('');
+        setEmail('');
+        setPhone('');
+        setMessage('');
+      }
+    } else {
+      setStatus('error');
+      setStatusMessage(result.error ?? 'Não foi possível enviar agora. Tente novamente em instantes.');
+    }
   };
 
   return (
     <PageShell activeItem="/contato">
+      <Seo
+        title="Fale com o Tributos Brasil"
+        description="Canal direto para leitores, empresas e profissionais. Envie sua mensagem, fale pelo WhatsApp ou por telefone com nossa equipe."
+        canonical="/contato"
+      />
+      <JsonLd
+        id="contact-breadcrumb"
+        data={breadcrumbJsonLd([
+          { name: 'Home', url: '/' },
+          { name: 'Contato', url: '/contato' },
+        ])}
+      />
       <Breadcrumbs
         items={[
           { href: '/', label: 'Home' },
@@ -169,19 +206,32 @@ export function ContactPage() {
 
                 {status === 'error' && (
                   <p className="text-sm text-red-600">
-                    Preencha nome, e-mail e mensagem para gerar o contato corretamente.
+                    {statusMessage}
                   </p>
                 )}
 
                 {status === 'success' && (
                   <p className="text-sm text-green-600">
-                    Seu cliente de e-mail foi acionado com os dados preenchidos.
+                    {statusMessage}
                   </p>
                 )}
 
-                <button type="submit" className="btn-primary inline-flex items-center gap-2">
-                  <Send className="w-4 h-4" />
-                  Abrir e-mail pronto
+                <button
+                  type="submit"
+                  className="btn-primary inline-flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                  disabled={status === 'loading'}
+                >
+                  {status === 'loading' ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Enviando...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      Enviar mensagem
+                    </>
+                  )}
                 </button>
               </form>
             </div>

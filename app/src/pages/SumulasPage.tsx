@@ -4,6 +4,9 @@ import { AppLink } from '@/components/common/AppLink';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { PageShell } from '@/components/layout/PageShell';
 import { NewsletterBox } from '@/components/news/NewsletterBox';
+import { Seo } from '@/components/common/Seo';
+import { JsonLd } from '@/components/common/JsonLd';
+import { breadcrumbJsonLd } from '@/lib/jsonld';
 
 const summaries = [
   {
@@ -49,6 +52,19 @@ export function SumulasPage() {
 
   return (
     <PageShell activeItem="/categoria/jurisprudencia">
+      <Seo
+        title="Banco de Súmulas — STF, STJ e CARF"
+        description="Consulte súmulas e entendimentos consolidados do STF, STJ e CARF em matéria tributária, com impacto prático para empresas e operadores do direito."
+        canonical="/sumulas"
+      />
+      <JsonLd
+        id="sumulas-breadcrumb"
+        data={breadcrumbJsonLd([
+          { name: 'Home', url: '/' },
+          { name: 'Jurisprudência', url: '/categoria/jurisprudencia' },
+          { name: 'Banco de Súmulas', url: '/sumulas' },
+        ])}
+      />
       <Breadcrumbs
         items={[
           { href: '/', label: 'Home' },

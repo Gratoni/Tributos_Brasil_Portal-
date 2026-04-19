@@ -7,6 +7,9 @@ import { NewsletterBox } from '@/components/news/NewsletterBox';
 import { NewsCard } from '@/components/news/NewsCard';
 import { MostReadList } from '@/components/news/MostReadList';
 import { AppLink } from '@/components/common/AppLink';
+import { Seo } from '@/components/common/Seo';
+import { JsonLd } from '@/components/common/JsonLd';
+import { breadcrumbJsonLd, collectionPageJsonLd } from '@/lib/jsonld';
 import {
   categories,
   getFeaturedNews,
@@ -103,8 +106,33 @@ export function NewsIndexPage({ mode = 'all' }: NewsIndexPageProps) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const seoCanonical = mode === 'featured' ? '/destaques' : mode === 'articles' ? '/artigos' : '/noticias';
+  const seoTitle = query ? `${copy.title} — busca por "${query}"` : copy.title;
+  const pageSuffix = safePage > 1 ? ` — Página ${safePage}` : '';
+
   return (
     <PageShell activeItem={copy.activeItem}>
+      <Seo
+        title={`${seoTitle}${pageSuffix}`}
+        description={copy.description}
+        canonical={seoCanonical}
+        noindex={Boolean(query) || safePage > 1}
+      />
+      <JsonLd
+        id={`collection-${mode}`}
+        data={collectionPageJsonLd({
+          name: copy.title,
+          description: copy.description,
+          url: seoCanonical,
+        })}
+      />
+      <JsonLd
+        id={`breadcrumb-${mode}`}
+        data={breadcrumbJsonLd([
+          { name: 'Home', url: '/' },
+          { name: copy.title, url: seoCanonical },
+        ])}
+      />
       <Breadcrumbs
         items={[
           { href: '/', label: 'Home' },

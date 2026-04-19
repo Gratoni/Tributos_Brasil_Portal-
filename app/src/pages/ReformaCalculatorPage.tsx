@@ -3,6 +3,9 @@ import { AppLink } from '@/components/common/AppLink';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { PageShell } from '@/components/layout/PageShell';
 import { NewsletterBox } from '@/components/news/NewsletterBox';
+import { Seo } from '@/components/common/Seo';
+import { JsonLd } from '@/components/common/JsonLd';
+import { breadcrumbJsonLd } from '@/lib/jsonld';
 
 const currency = new Intl.NumberFormat('pt-BR', {
   style: 'currency',
@@ -23,6 +26,19 @@ export function ReformaCalculatorPage() {
 
   return (
     <PageShell activeItem="/categoria/reforma-tributaria">
+      <Seo
+        title="Calculadora de Impacto da Reforma Tributária"
+        description="Simule o impacto da Reforma Tributária no faturamento da sua empresa: compare alíquota atual, alíquota projetada e créditos estimados."
+        canonical="/calculadora-reforma"
+      />
+      <JsonLd
+        id="reforma-calc-breadcrumb"
+        data={breadcrumbJsonLd([
+          { name: 'Home', url: '/' },
+          { name: 'Reforma Tributária', url: '/categoria/reforma-tributaria' },
+          { name: 'Calculadora', url: '/calculadora-reforma' },
+        ])}
+      />
       <Breadcrumbs
         items={[
           { href: '/', label: 'Home' },

@@ -2,6 +2,9 @@ import { AppLink } from '@/components/common/AppLink';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { PageShell } from '@/components/layout/PageShell';
 import { NewsletterBox } from '@/components/news/NewsletterBox';
+import { Seo } from '@/components/common/Seo';
+import { JsonLd } from '@/components/common/JsonLd';
+import { breadcrumbJsonLd } from '@/lib/jsonld';
 
 interface InstitutionalPageProps {
   variant: 'advertise' | 'careers';
@@ -44,11 +47,29 @@ const pageContent = {
   },
 } as const;
 
+const variantPaths: Record<InstitutionalPageProps['variant'], string> = {
+  advertise: '/anuncie',
+  careers: '/trabalhe-conosco',
+};
+
 export function InstitutionalPage({ variant }: InstitutionalPageProps) {
   const content = pageContent[variant];
+  const path = variantPaths[variant];
 
   return (
     <PageShell>
+      <Seo
+        title={content.title}
+        description={content.description}
+        canonical={path}
+      />
+      <JsonLd
+        id={`inst-breadcrumb-${variant}`}
+        data={breadcrumbJsonLd([
+          { name: 'Home', url: '/' },
+          { name: content.title, url: path },
+        ])}
+      />
       <Breadcrumbs
         items={[
           { href: '/', label: 'Home' },
