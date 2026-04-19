@@ -17,8 +17,13 @@ import { Footer } from '@/components/layout/Footer';
 import { NewsletterBox } from '@/components/news/NewsletterBox';
 import { columnists } from '@/data/mockData';
 import { siteConfig } from '@/config/site';
+import { useSeo } from '@/hooks/useSeo';
 
 export function AboutPage() {
+  useSeo({
+    title: 'Sobre',
+    description: `Conheça a ${siteConfig.brandName}: portal editorial especializado em notícias tributárias, contábeis e jurídicas.`,
+  });
   const stats = [
     { number: '15+', label: 'Anos de experiência', icon: Clock },
     { number: '500+', label: 'Empresas atendidas', icon: Users },

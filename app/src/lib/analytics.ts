@@ -8,10 +8,15 @@
  * for produção — sem poluir o console em desenvolvimento.
  */
 
+type GtagCommand =
+  | ['js', Date]
+  | ['config', string, Record<string, unknown>?]
+  | ['event', string, Record<string, unknown>?]
+  | ['set', Record<string, unknown>];
+
 declare global {
   interface Window {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    gtag: (...args: any[]) => void;
+    gtag: (...args: GtagCommand) => void;
     dataLayer: unknown[];
   }
 }
@@ -29,8 +34,8 @@ export function initAnalytics(): void {
   window.dataLayer = window.dataLayer ?? [];
 
   // Função gtag nativa (push arguments é intencional para o GA)
-  window.gtag = function (...args: unknown[]) {
-    window.dataLayer.push(args)
+  window.gtag = function (...args: GtagCommand) {
+    window.dataLayer.push(args);
   };
 
   window.gtag('js', new Date());

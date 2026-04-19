@@ -14,6 +14,7 @@ import {
   getPublishedNews,
   searchNews,
 } from '@/data/mockData';
+import { useSeo } from '@/hooks/useSeo';
 
 interface NewsIndexPageProps {
   mode?: 'all' | 'featured' | 'articles';
@@ -51,6 +52,11 @@ export function NewsIndexPage({ mode = 'all' }: NewsIndexPageProps) {
   const currentPage = Math.max(1, Number(searchParams.get('pagina') ?? '1'));
   const copy        = pageCopy[mode];
   const mostRead    = getMostReadNews();
+
+  useSeo({
+    title: copy.title,
+    description: copy.description,
+  });
 
   let baseArticles = getPublishedNews();
 

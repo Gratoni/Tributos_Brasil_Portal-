@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { useState, useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { HeaderTop } from '@/components/layout/HeaderTop';
 import { HeaderMain } from '@/components/layout/HeaderMain';
@@ -13,24 +13,57 @@ import { JurisprudenciaSection } from '@/sections/home/JurisprudenciaSection';
 import { ColumnistsSection } from '@/sections/home/ColumnistsSection';
 import { AlertasSection } from '@/sections/home/AlertasSection';
 import { InstitutionalCTA } from '@/sections/home/InstitutionalCTA';
-import { NewsArticlePage } from '@/pages/NewsArticlePage';
-import { CategoryPage } from '@/pages/CategoryPage';
-import { AboutPage } from '@/pages/AboutPage';
-import { AdminDashboard } from '@/pages/admin/AdminDashboard';
-import { AdminLoginPage } from '@/pages/admin/AdminLoginPage';
 import { ProtectedRoute } from '@/components/admin/ProtectedRoute';
 import { AuthProvider } from '@/contexts/AuthContext';
-import { NewsIndexPage } from '@/pages/NewsIndexPage';
-import { ColumnistsPage } from '@/pages/ColumnistsPage';
-import { ColumnistProfilePage } from '@/pages/ColumnistProfilePage';
-import { ContactPage } from '@/pages/ContactPage';
-import { InstitutionalPage } from '@/pages/InstitutionalPage';
-import { LegalPage } from '@/pages/LegalPage';
-import { TagPage } from '@/pages/TagPage';
-import { ReformaGuidePage } from '@/pages/ReformaGuidePage';
-import { ReformaCalculatorPage } from '@/pages/ReformaCalculatorPage';
-import { ReformaAlertsPage } from '@/pages/ReformaAlertsPage';
-import { SumulasPage } from '@/pages/SumulasPage';
+
+const NewsArticlePage = lazy(() =>
+  import('@/pages/NewsArticlePage').then((m) => ({ default: m.NewsArticlePage })),
+);
+const CategoryPage = lazy(() =>
+  import('@/pages/CategoryPage').then((m) => ({ default: m.CategoryPage })),
+);
+const AboutPage = lazy(() =>
+  import('@/pages/AboutPage').then((m) => ({ default: m.AboutPage })),
+);
+const AdminDashboard = lazy(() =>
+  import('@/pages/admin/AdminDashboard').then((m) => ({ default: m.AdminDashboard })),
+);
+const AdminLoginPage = lazy(() =>
+  import('@/pages/admin/AdminLoginPage').then((m) => ({ default: m.AdminLoginPage })),
+);
+const NewsIndexPage = lazy(() =>
+  import('@/pages/NewsIndexPage').then((m) => ({ default: m.NewsIndexPage })),
+);
+const ColumnistsPage = lazy(() =>
+  import('@/pages/ColumnistsPage').then((m) => ({ default: m.ColumnistsPage })),
+);
+const ColumnistProfilePage = lazy(() =>
+  import('@/pages/ColumnistProfilePage').then((m) => ({ default: m.ColumnistProfilePage })),
+);
+const ContactPage = lazy(() =>
+  import('@/pages/ContactPage').then((m) => ({ default: m.ContactPage })),
+);
+const InstitutionalPage = lazy(() =>
+  import('@/pages/InstitutionalPage').then((m) => ({ default: m.InstitutionalPage })),
+);
+const LegalPage = lazy(() =>
+  import('@/pages/LegalPage').then((m) => ({ default: m.LegalPage })),
+);
+const TagPage = lazy(() =>
+  import('@/pages/TagPage').then((m) => ({ default: m.TagPage })),
+);
+const ReformaGuidePage = lazy(() =>
+  import('@/pages/ReformaGuidePage').then((m) => ({ default: m.ReformaGuidePage })),
+);
+const ReformaCalculatorPage = lazy(() =>
+  import('@/pages/ReformaCalculatorPage').then((m) => ({ default: m.ReformaCalculatorPage })),
+);
+const ReformaAlertsPage = lazy(() =>
+  import('@/pages/ReformaAlertsPage').then((m) => ({ default: m.ReformaAlertsPage })),
+);
+const SumulasPage = lazy(() =>
+  import('@/pages/SumulasPage').then((m) => ({ default: m.SumulasPage })),
+);
 import { 
   getFeaturedNews, 
   getLatestNews, 
@@ -41,6 +74,7 @@ import {
 import { Toaster } from '@/components/ui/sonner';
 import { siteConfig } from '@/config/site';
 import { usePageTracking } from '@/hooks/usePageTracking';
+import { useSeo } from '@/hooks/useSeo';
 
 // Página Home
 function HomePage() {
@@ -50,6 +84,13 @@ function HomePage() {
   const reformaNews = getNewsByCategory('reforma-tributaria').slice(0, 4);
   const jurisprudenciaNews = getNewsByCategory('jurisprudencia').slice(0, 4);
   const alertasNews = getNewsByCategory('alertas-fiscais').slice(0, 3);
+
+  useSeo({
+    title: undefined,
+    description:
+      'Portal especializado em notícias tributárias, contábeis e jurídicas. Acompanhe a Reforma Tributária, jurisprudência do STF e STJ, ICMS, IBS, CBS e análises para profissionais e empresas.',
+    url: siteConfig.officialUrl,
+  });
 
   return (
     <>
@@ -67,6 +108,17 @@ function HomePage() {
         </div>
       </section>
     </>
+  );
+}
+
+function RouteFallback() {
+  return (
+    <div className="min-h-[40vh] flex items-center justify-center py-16" role="status" aria-live="polite">
+      <div className="flex items-center gap-3 text-[hsl(var(--editorial-gray))]">
+        <span className="inline-block w-3 h-3 rounded-full bg-[hsl(var(--editorial-blue))] animate-pulse" aria-hidden="true" />
+        <span>Carregando…</span>
+      </div>
+    </div>
   );
 }
 
@@ -98,10 +150,17 @@ function MainLayout() {
 
   return (
     <div className="min-h-screen bg-white">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-md focus:bg-[hsl(var(--editorial-blue))] focus:text-white focus:shadow-lg"
+      >
+        Pular para o conteúdo principal
+      </a>
       {showGlobalShell && <HeaderTop />}
       {showGlobalShell && <HeaderMain />}
       {showGlobalShell && <Navigation />}
-      <main>
+      <main id="main-content" tabIndex={-1}>
+        <Suspense fallback={<RouteFallback />}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/noticias" element={<NewsIndexPage />} />
@@ -143,6 +202,7 @@ function MainLayout() {
             </div>
           } />
         </Routes>
+        </Suspense>
       </main>
       {showGlobalShell && <Footer />}
       <Toaster />
@@ -178,18 +238,20 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <ScrollManager />
-        <Routes>
-          <Route path="/admin/login" element={<AdminLoginPage />} />
-          <Route
-            path="/admin/*"
-            element={
-              <ProtectedRoute>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/*" element={<MainLayout />} />
-        </Routes>
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
+            <Route path="/admin/login" element={<AdminLoginPage />} />
+            <Route
+              path="/admin/*"
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/*" element={<MainLayout />} />
+          </Routes>
+        </Suspense>
       </AuthProvider>
     </BrowserRouter>
   );

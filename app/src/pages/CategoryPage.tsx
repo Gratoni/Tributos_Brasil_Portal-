@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useSeo } from '@/hooks/useSeo';
 
 interface CategoryPageProps {
   slug?: string;
@@ -43,6 +44,11 @@ export function CategoryPage({ slug: propSlug }: CategoryPageProps = {}) {
 
   const featuredArticle = sortedArticles[0];
   const otherArticles = sortedArticles.slice(1);
+
+  useSeo({
+    title: `${category.name} — Notícias`,
+    description: category.description ?? `Notícias e análises sobre ${category.name}.`,
+  });
 
   return (
     <PageShell activeItem={`/categoria/${category.slug}`}>

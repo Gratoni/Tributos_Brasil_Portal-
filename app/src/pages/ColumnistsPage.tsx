@@ -4,8 +4,13 @@ import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { PageShell } from '@/components/layout/PageShell';
 import { NewsletterBox } from '@/components/news/NewsletterBox';
 import { authors, getNewsByAuthor } from '@/data/mockData';
+import { useSeo } from '@/hooks/useSeo';
 
 export function ColumnistsPage() {
+  useSeo({
+    title: 'Colunistas',
+    description: 'Especialistas que escrevem no portal: análises de tributaristas, contadores e professores de direito.',
+  });
   const directory = [...authors]
     .map((author) => {
       const articles = getNewsByAuthor(author.slug);

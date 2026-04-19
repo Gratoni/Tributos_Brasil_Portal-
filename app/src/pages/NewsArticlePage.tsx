@@ -25,6 +25,9 @@ import {
   buildTwitterProfileUrl,
   buildTwitterShareUrl,
 } from '@/lib/social';
+import { sanitizeHtml } from '@/lib/sanitize';
+import { useSeo } from '@/hooks/useSeo';
+import { siteConfig } from '@/config/site';
 import type { NewsArticle } from '@/types';
 
 interface NewsArticlePageProps {
@@ -51,6 +54,10 @@ export function NewsArticlePage({ slug: propSlug }: NewsArticlePageProps = {}) {
   const [savedArticles, setSavedArticles] = useState<string[]>(getInitialSavedArticles);
 
   const article = useMemo<NewsArticle | null>(() => getNewsBySlug(slug) ?? null, [slug]);
+  const sanitizedContent = useMemo(
+    () => (article ? sanitizeHtml(article.content) : ''),
+    [article],
+  );
   const relatedArticles = useMemo<NewsArticle[]>(() => {
     if (!article) {
       return [];
@@ -68,6 +75,53 @@ export function NewsArticlePage({ slug: propSlug }: NewsArticlePageProps = {}) {
     window.addEventListener('storage', handleStorage);
     return () => window.removeEventListener('storage', handleStorage);
   }, []);
+
+  const canonical = article
+    ? `${siteConfig.officialUrl.replace(/\/$/, '')}/noticias/${article.slug}`
+    : undefined;
+
+  const articleStructuredData = useMemo(() => {
+    if (!article) return null;
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'NewsArticle',
+      headline: article.title,
+      description: article.metaDescription ?? article.excerpt,
+      image: article.featuredImage ? [article.featuredImage] : undefined,
+      datePublished: article.publishedAt,
+      dateModified: article.updatedAt ?? article.publishedAt,
+      author: {
+        '@type': 'Person',
+        name: article.author.name,
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: siteConfig.brandName,
+        logo: {
+          '@type': 'ImageObject',
+          url: `${siteConfig.officialUrl}${siteConfig.logoUrl.replace(/^\//, '')}`,
+        },
+      },
+      mainEntityOfPage: canonical,
+      articleSection: article.category.name,
+      keywords: article.tags.map((t) => t.name).join(', '),
+    };
+  }, [article, canonical]);
+
+  useSeo({
+    title: article?.metaTitle ?? article?.title ?? 'Notícia não encontrada',
+    description: article?.metaDescription ?? article?.excerpt,
+    image: article?.featuredImage,
+    url: canonical,
+    type: 'article',
+    publishedTime: article?.publishedAt,
+    modifiedTime: article?.updatedAt,
+    author: article?.author.name,
+    section: article?.category.name,
+    tags: article?.tags.map((t) => t.name),
+    noIndex: !article,
+    structuredData: articleStructuredData,
+  });
 
   if (!article) {
     return (
@@ -204,7 +258,7 @@ export function NewsArticlePage({ slug: propSlug }: NewsArticlePageProps = {}) {
           <div className="grid lg:grid-cols-[1fr_300px] gap-8">
             <div>
               <div className="prose prose-lg max-w-none editorial-prose mb-8">
-                <div dangerouslySetInnerHTML={{ __html: article.content }} />
+                <div dangerouslySetInnerHTML={{ __html: sanitizedContent }} />
               </div>
 
               <div className="flex flex-wrap gap-2 mb-8">

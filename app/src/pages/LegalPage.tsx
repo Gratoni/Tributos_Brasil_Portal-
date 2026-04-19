@@ -2,6 +2,7 @@ import { AppLink } from '@/components/common/AppLink';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { PageShell } from '@/components/layout/PageShell';
 import { NewsletterBox } from '@/components/news/NewsletterBox';
+import { useSeo } from '@/hooks/useSeo';
 
 interface LegalPageProps {
   variant: 'privacy' | 'terms' | 'lgpd';
@@ -93,6 +94,11 @@ const legalContent = {
 
 export function LegalPage({ variant }: LegalPageProps) {
   const content = legalContent[variant];
+
+  useSeo({
+    title: content.title,
+    description: `${content.title} do portal Tributos Brasil.`,
+  });
 
   return (
     <PageShell>

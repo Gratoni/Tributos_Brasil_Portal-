@@ -6,8 +6,13 @@ import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { PageShell } from '@/components/layout/PageShell';
 import { NewsletterBox } from '@/components/news/NewsletterBox';
 import { siteConfig } from '@/config/site';
+import { useSeo } from '@/hooks/useSeo';
 
 export function ContactPage() {
+  useSeo({
+    title: 'Contato',
+    description: `Fale com a equipe ${siteConfig.brandName}: dúvidas editoriais, sugestões de pauta e atendimento corporativo.`,
+  });
   const [searchParams] = useSearchParams();
   const initialSubject = searchParams.get('assunto') ?? '';
   const [subject, setSubject] = useState(initialSubject);

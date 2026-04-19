@@ -2,6 +2,7 @@ import { AppLink } from '@/components/common/AppLink';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { PageShell } from '@/components/layout/PageShell';
 import { NewsletterBox } from '@/components/news/NewsletterBox';
+import { useSeo } from '@/hooks/useSeo';
 
 interface InstitutionalPageProps {
   variant: 'advertise' | 'careers';
@@ -46,6 +47,11 @@ const pageContent = {
 
 export function InstitutionalPage({ variant }: InstitutionalPageProps) {
   const content = pageContent[variant];
+
+  useSeo({
+    title: content.title,
+    description: content.description,
+  });
 
   return (
     <PageShell>

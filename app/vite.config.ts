@@ -1,9 +1,15 @@
+/// <reference types="vitest" />
 import path from "path"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => ({
+  test: {
+    environment: 'jsdom',
+    globals: false,
+    include: ['src/**/*.{test,spec}.{ts,tsx}'],
+  },
   base: '/',
   plugins: [
     react(),

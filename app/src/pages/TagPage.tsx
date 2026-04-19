@@ -6,12 +6,21 @@ import { NewsletterBox } from '@/components/news/NewsletterBox';
 import { MostReadList } from '@/components/news/MostReadList';
 import { NewsCard } from '@/components/news/NewsCard';
 import { getMostReadNews, getNewsByTag, getTagBySlug } from '@/data/mockData';
+import { useSeo } from '@/hooks/useSeo';
 
 export function TagPage() {
   const { slug = '' } = useParams();
   const tag = getTagBySlug(slug);
   const articles = getNewsByTag(slug);
   const mostRead = getMostReadNews();
+
+  useSeo({
+    title: tag ? `Tag: ${tag.name}` : 'Tag não encontrada',
+    description: tag
+      ? `Notícias e análises marcadas com a tag ${tag.name}.`
+      : undefined,
+    noIndex: !tag,
+  });
 
   if (!tag) {
     return (
