@@ -1,20 +1,20 @@
 import { api } from './api'
 import type { Author, Category, NewsArticle, Tag } from '@/types'
 
-type StrapiEntity<T = unknown> = {
+type StrapiEntity<T = any> = {
     id?: number | string
     attributes?: T
 }
 
-type StrapiSingleRelation<T = unknown> = {
+type StrapiSingleRelation<T = any> = {
     data?: StrapiEntity<T> | null
 }
 
-type StrapiManyRelation<T = unknown> = {
+type StrapiManyRelation<T = any> = {
     data?: StrapiEntity<T>[]
 }
 
-type StrapiCollectionResponse<T = unknown> = {
+type StrapiCollectionResponse<T = any> = {
     data?: StrapiEntity<T>[]
 }
 

@@ -15,22 +15,24 @@ import { AlertasSection } from '@/sections/home/AlertasSection';
 import { InstitutionalCTA } from '@/sections/home/InstitutionalCTA';
 import { NewsArticlePage } from '@/pages/NewsArticlePage';
 import { CategoryPage } from '@/pages/CategoryPage';
-import { AboutPage } from '@/pages/AboutPage';
-import { AdminDashboard } from '@/pages/admin/AdminDashboard';
-import { AdminLoginPage } from '@/pages/admin/AdminLoginPage';
 import { ProtectedRoute } from '@/components/admin/ProtectedRoute';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { NewsIndexPage } from '@/pages/NewsIndexPage';
-import { ColumnistsPage } from '@/pages/ColumnistsPage';
-import { ColumnistProfilePage } from '@/pages/ColumnistProfilePage';
-import { ContactPage } from '@/pages/ContactPage';
-import { InstitutionalPage } from '@/pages/InstitutionalPage';
-import { LegalPage } from '@/pages/LegalPage';
-import { TagPage } from '@/pages/TagPage';
-import { ReformaGuidePage } from '@/pages/ReformaGuidePage';
-import { ReformaCalculatorPage } from '@/pages/ReformaCalculatorPage';
-import { ReformaAlertsPage } from '@/pages/ReformaAlertsPage';
-import { SumulasPage } from '@/pages/SumulasPage';
+import { lazy, Suspense } from 'react';
+
+const AboutPage = lazy(() => import('@/pages/AboutPage').then(m => ({ default: m.AboutPage })));
+const AdminDashboard = lazy(() => import('@/pages/admin/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
+const AdminLoginPage = lazy(() => import('@/pages/admin/AdminLoginPage').then(m => ({ default: m.AdminLoginPage })));
+const ColumnistsPage = lazy(() => import('@/pages/ColumnistsPage').then(m => ({ default: m.ColumnistsPage })));
+const ColumnistProfilePage = lazy(() => import('@/pages/ColumnistProfilePage').then(m => ({ default: m.ColumnistProfilePage })));
+const ContactPage = lazy(() => import('@/pages/ContactPage').then(m => ({ default: m.ContactPage })));
+const InstitutionalPage = lazy(() => import('@/pages/InstitutionalPage').then(m => ({ default: m.InstitutionalPage })));
+const LegalPage = lazy(() => import('@/pages/LegalPage').then(m => ({ default: m.LegalPage })));
+const TagPage = lazy(() => import('@/pages/TagPage').then(m => ({ default: m.TagPage })));
+const ReformaGuidePage = lazy(() => import('@/pages/ReformaGuidePage').then(m => ({ default: m.ReformaGuidePage })));
+const ReformaCalculatorPage = lazy(() => import('@/pages/ReformaCalculatorPage').then(m => ({ default: m.ReformaCalculatorPage })));
+const ReformaAlertsPage = lazy(() => import('@/pages/ReformaAlertsPage').then(m => ({ default: m.ReformaAlertsPage })));
+const SumulasPage = lazy(() => import('@/pages/SumulasPage').then(m => ({ default: m.SumulasPage })));
 import { 
   getFeaturedNews, 
   getLatestNews, 
@@ -102,47 +104,53 @@ function MainLayout() {
       {showGlobalShell && <HeaderMain />}
       {showGlobalShell && <Navigation />}
       <main>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/noticias" element={<NewsIndexPage />} />
-          <Route path="/destaques" element={<NewsIndexPage mode="featured" />} />
-          <Route path="/artigos" element={<NewsIndexPage mode="articles" />} />
-          <Route path="/noticias/:slug" element={<NewsArticlePage />} />
-          <Route path="/categoria/:slug" element={<CategoryPage />} />
-          <Route path="/sobre" element={<AboutPage />} />
-          <Route path="/colunistas" element={<ColumnistsPage />} />
-          <Route path="/colunistas/:slug" element={<ColumnistProfilePage />} />
-          <Route path="/contato" element={<ContactPage />} />
-          <Route path="/anuncie" element={<InstitutionalPage variant="advertise" />} />
-          <Route path="/trabalhe-conosco" element={<InstitutionalPage variant="careers" />} />
-          <Route path="/politica-de-privacidade" element={<LegalPage variant="privacy" />} />
-          <Route path="/termos-de-uso" element={<LegalPage variant="terms" />} />
-          <Route path="/lgpd" element={<LegalPage variant="lgpd" />} />
-          <Route path="/tag/:slug" element={<TagPage />} />
-          <Route path="/guia-reforma-tributaria" element={<ReformaGuidePage />} />
-          <Route path="/calculadora-reforma" element={<ReformaCalculatorPage />} />
-          <Route path="/alertas-reforma" element={<ReformaAlertsPage />} />
-          <Route path="/sumulas" element={<SumulasPage />} />
-          <Route path="*" element={
-            <div className="min-h-[60vh] flex items-center justify-center py-20">
-              <div className="text-center px-4">
-                <p className="text-7xl font-bold text-[hsl(var(--editorial-blue))] mb-4">404</p>
-                <h1 className="text-2xl font-bold text-[hsl(var(--editorial-gray-dark))] mb-2">
-                  Página não encontrada
-                </h1>
-                <p className="text-[hsl(var(--editorial-gray))] mb-6">
-                  O endereço que você acessou não existe ou foi removido.
-                </p>
-                <a
-                  href="/"
-                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-[hsl(var(--editorial-blue))] text-white font-medium rounded-lg hover:bg-[hsl(var(--editorial-blue-dark))] transition-colors"
-                >
-                  Voltar para Home
-                </a>
+        <Suspense fallback={
+          <div className="min-h-[50vh] flex items-center justify-center">
+            <div className="w-8 h-8 border-4 border-[hsl(var(--editorial-blue))] border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        }>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/noticias" element={<NewsIndexPage />} />
+            <Route path="/destaques" element={<NewsIndexPage mode="featured" />} />
+            <Route path="/artigos" element={<NewsIndexPage mode="articles" />} />
+            <Route path="/noticias/:slug" element={<NewsArticlePage />} />
+            <Route path="/categoria/:slug" element={<CategoryPage />} />
+            <Route path="/sobre" element={<AboutPage />} />
+            <Route path="/colunistas" element={<ColumnistsPage />} />
+            <Route path="/colunistas/:slug" element={<ColumnistProfilePage />} />
+            <Route path="/contato" element={<ContactPage />} />
+            <Route path="/anuncie" element={<InstitutionalPage variant="advertise" />} />
+            <Route path="/trabalhe-conosco" element={<InstitutionalPage variant="careers" />} />
+            <Route path="/politica-de-privacidade" element={<LegalPage variant="privacy" />} />
+            <Route path="/termos-de-uso" element={<LegalPage variant="terms" />} />
+            <Route path="/lgpd" element={<LegalPage variant="lgpd" />} />
+            <Route path="/tag/:slug" element={<TagPage />} />
+            <Route path="/guia-reforma-tributaria" element={<ReformaGuidePage />} />
+            <Route path="/calculadora-reforma" element={<ReformaCalculatorPage />} />
+            <Route path="/alertas-reforma" element={<ReformaAlertsPage />} />
+            <Route path="/sumulas" element={<SumulasPage />} />
+            <Route path="*" element={
+              <div className="min-h-[60vh] flex items-center justify-center py-20">
+                <div className="text-center px-4">
+                  <p className="text-7xl font-bold text-[hsl(var(--editorial-blue))] mb-4">404</p>
+                  <h1 className="text-2xl font-bold text-[hsl(var(--editorial-gray-dark))] mb-2">
+                    Página não encontrada
+                  </h1>
+                  <p className="text-[hsl(var(--editorial-gray))] mb-6">
+                    O endereço que você acessou não existe ou foi removido.
+                  </p>
+                  <a
+                    href="/"
+                    className="inline-flex items-center gap-2 px-6 py-2.5 bg-[hsl(var(--editorial-blue))] text-white font-medium rounded-lg hover:bg-[hsl(var(--editorial-blue-dark))] transition-colors"
+                  >
+                    Voltar para Home
+                  </a>
+                </div>
               </div>
-            </div>
-          } />
-        </Routes>
+            } />
+          </Routes>
+        </Suspense>
       </main>
       {showGlobalShell && <Footer />}
       <Toaster />
@@ -179,12 +187,18 @@ function App() {
       <AuthProvider>
         <ScrollManager />
         <Routes>
-          <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route path="/admin/login" element={
+            <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[hsl(var(--editorial-surface))]"><div className="w-8 h-8 border-4 border-[hsl(var(--editorial-blue))] border-t-transparent rounded-full animate-spin"></div></div>}>
+              <AdminLoginPage />
+            </Suspense>
+          } />
           <Route
             path="/admin/*"
             element={
               <ProtectedRoute>
-                <AdminDashboard />
+                <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[hsl(var(--editorial-surface))]"><div className="w-8 h-8 border-4 border-[hsl(var(--editorial-blue))] border-t-transparent rounded-full animate-spin"></div></div>}>
+                  <AdminDashboard />
+                </Suspense>
               </ProtectedRoute>
             }
           />

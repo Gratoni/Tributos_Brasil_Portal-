@@ -25,8 +25,10 @@ const STORAGE_KEY = 'tb_admin_token';
 const SESSION_TTL_MS = 8 * 60 * 60 * 1000; // 8 horas
 
 /* Credenciais configuráveis via .env */
-const ADMIN_USER = import.meta.env.VITE_ADMIN_USER ?? 'admin';
-const ADMIN_PASS = import.meta.env.VITE_ADMIN_PASSWORD ?? 'tributos2025';
+// Removed VITE_ variables to prevent credentials exposure in frontend bundle.
+// Should be implemented via secure backend validation.
+const ADMIN_USER = '';
+const ADMIN_PASS = '';
 
 /** Token simples: base64(user:timestamp) — suficiente para SPA demo */
 function generateToken(user: string): string {
