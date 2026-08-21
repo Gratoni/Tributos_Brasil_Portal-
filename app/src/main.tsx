@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App.tsx';
 import { initAnalytics } from '@/lib/analytics';
+import { HelmetProvider } from 'react-helmet-async';
 
 // Inicializa Google Analytics (só injeta se VITE_GA_MEASUREMENT_ID estiver configurado)
 initAnalytics();
@@ -18,6 +19,8 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <HelmetProvider>
+      <App />
+    </HelmetProvider>
   </StrictMode>,
 );

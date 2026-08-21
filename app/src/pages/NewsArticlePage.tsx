@@ -18,6 +18,8 @@ import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { PageShell } from '@/components/layout/PageShell';
 import { NewsletterBox } from '@/components/news/NewsletterBox';
 import { getNewsBySlug, getRelatedNews } from '@/data/mockData';
+import DOMPurify from 'dompurify';
+import { Helmet } from 'react-helmet-async';
 import {
   buildFacebookShareUrl,
   buildLinkedInProfileUrl,
@@ -122,6 +124,30 @@ export function NewsArticlePage({ slug: propSlug }: NewsArticlePageProps = {}) {
 
   return (
     <PageShell activeItem={`/categoria/${article.category.slug}`}>
+      <Helmet>
+        <title>{article.metaTitle || article.title} | Tributos Brasil</title>
+        <meta name="description" content={article.metaDescription || article.excerpt} />
+        <meta property="og:title" content={article.title} />
+        <meta property="og:description" content={article.excerpt} />
+        {article.featuredImage && <meta property="og:image" content={article.featuredImage} />}
+        <meta property="og:type" content="article" />
+        <link rel="canonical" href={`https://tributosbrasil.com.br/noticias/${article.slug}`} />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "NewsArticle",
+            "headline": article.title,
+            "image": article.featuredImage ? [article.featuredImage] : [],
+            "datePublished": article.publishedAt,
+            "dateModified": article.updatedAt || article.publishedAt,
+            "author": [{
+              "@type": "Person",
+              "name": article.author.name,
+              "url": `https://tributosbrasil.com.br/colunistas/${article.author.slug}`
+            }]
+          })}
+        </script>
+      </Helmet>
       <Breadcrumbs
         items={[
           { href: '/', label: 'Home' },
@@ -204,7 +230,7 @@ export function NewsArticlePage({ slug: propSlug }: NewsArticlePageProps = {}) {
           <div className="grid lg:grid-cols-[1fr_300px] gap-8">
             <div>
               <div className="prose prose-lg max-w-none editorial-prose mb-8">
-                <div dangerouslySetInnerHTML={{ __html: article.content }} />
+                <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content) }} />
               </div>
 
               <div className="flex flex-wrap gap-2 mb-8">

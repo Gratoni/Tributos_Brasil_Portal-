@@ -48,8 +48,21 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
   if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
 
-  // API remota — network only
+  // API remota — stale-while-revalidate
   if (url.pathname.startsWith('/api/') || url.hostname !== self.location.hostname) {
+    event.respondWith(
+      caches.match(request).then((cached) => {
+        const networkFetch = fetch(request).then((response) => {
+          if (response.ok) {
+            const toCache = response.clone();
+            caches.open(CACHE_VERSION).then((cache) => cache.put(request, toCache));
+          }
+          return response;
+        });
+
+        return cached ?? networkFetch;
+      }),
+    );
     return;
   }
 

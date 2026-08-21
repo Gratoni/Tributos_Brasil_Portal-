@@ -9,6 +9,7 @@ import { MostReadList } from '@/components/news/MostReadList';
 import { NewsletterBox } from '@/components/news/NewsletterBox';
 import { categories, getNewsByCategory, getMostReadNews } from '@/data/mockData';
 import { Button } from '@/components/ui/button';
+import { Helmet } from 'react-helmet-async';
 import {
   Select,
   SelectContent,
@@ -46,6 +47,14 @@ export function CategoryPage({ slug: propSlug }: CategoryPageProps = {}) {
 
   return (
     <PageShell activeItem={`/categoria/${category.slug}`}>
+      <Helmet>
+        <title>{category.name} | Tributos Brasil</title>
+        <meta name="description" content={category.description || `Notícias sobre ${category.name}`} />
+        <meta property="og:title" content={`${category.name} | Tributos Brasil`} />
+        <meta property="og:description" content={category.description || `Notícias sobre ${category.name}`} />
+        <meta property="og:type" content="website" />
+        <link rel="canonical" href={`https://tributosbrasil.com.br/categoria/${category.slug}`} />
+      </Helmet>
       <Breadcrumbs
         items={[
           { href: '/', label: 'Home' },

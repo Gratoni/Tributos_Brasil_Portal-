@@ -1,8 +1,11 @@
-import { AlertCircle } from 'lucide-react';
+import { useState } from 'react';
+import { AlertCircle, Pause, Play } from 'lucide-react';
 import { AppLink } from '@/components/common/AppLink';
 import { breakingNews } from '@/data/mockData';
 
 export function BreakingNewsTicker() {
+  const [isPaused, setIsPaused] = useState(false);
+
   if (breakingNews.length === 0) return null;
 
   const tickerNews = [...breakingNews, ...breakingNews];
@@ -15,8 +18,8 @@ export function BreakingNewsTicker() {
             <AlertCircle className="w-4 h-4" />
             <span className="font-bold text-sm uppercase tracking-wider">Urgente</span>
           </div>
-          <div className="flex-1 overflow-hidden">
-            <div className="ticker-animation whitespace-nowrap">
+          <div className="flex-1 overflow-hidden relative">
+            <div className={`ticker-animation whitespace-nowrap ${isPaused ? '[animation-play-state:paused]' : ''}`}>
               {tickerNews.map((news, index) => (
                 <AppLink
                   key={`${news.id}-${index}`}
@@ -34,6 +37,13 @@ export function BreakingNewsTicker() {
               ))}
             </div>
           </div>
+          <button
+            onClick={() => setIsPaused(!isPaused)}
+            className="flex-shrink-0 text-white/70 hover:text-white p-1 rounded transition-colors"
+            aria-label={isPaused ? "Retomar animação" : "Pausar animação"}
+          >
+            {isPaused ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
+          </button>
         </div>
       </div>
     </div>
